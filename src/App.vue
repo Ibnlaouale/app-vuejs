@@ -1,6 +1,6 @@
 <template>
-  <h1>hello {{ firstName }}</h1>
-  <p>test vue js</p>
+  <h1>App vue js</h1>
+  <p id="pName">Hello..!! my name is : {{ firstName }}</p>
   <div class="btn">
     <button @click="increment">incrementer</button>
     <button @click="decrement">Decrementer</button>
@@ -10,7 +10,7 @@
 
 <script setup>
 import { ref } from 'vue';
-const firstName = 'Jonh Doe'
+const firstName = 'Dini'
 
 const count = ref(0)
 console.log('count :', count);
@@ -25,13 +25,26 @@ const decrement = () => {
 </script>
 
 <style>
+#pName{
+  color: blue;
+}
 .btn {
   width: 40rem;
   display: flex;
   justify-content: space-evenly;
 }
+.btn button{
+  padding: 5px;
+  border-radius: 10px;
+  cursor: pointer;
+  color: blue;
+  border: .5px solid;
+  font-size: 16px;
+  background-color: white;
+}
 
 .p {
+  color: green;
   width: 40rem;
   text-align: center;
   font-size: 32px;

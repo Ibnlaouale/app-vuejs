@@ -30,7 +30,29 @@
       <button @click="changeAge">Modifier age</button>
     </ul>
   </div>
-
+<hr>
+<form @submit.prevent="editeName">
+  <h3>modifier l'original</h3>
+  <label><input type="text" placeholder="Nouveau nom" v-model="nouveauNom"></label>
+  <button @click="editeName">Modifier le nom</button>
+</form>
+<h3>objet reactive</h3>
+<p>l'original:
+  <ul>
+    <li>{{ profil.nom }}</li>
+    <li>{{ profil.prenom }}</li>
+    <li>{{ profil.sexe }}</li>
+    <li>{{ profil.eamil }}</li>
+  </ul>
+</p>
+<p>le proxy: 
+  <ul>
+    <li>{{ profilProxy.nom }}</li>
+    <li>{{ profilProxy.prenom }}</li>
+    <li>{{ profilProxy.sexe }}</li>
+    <li>{{ profilProxy.eamil }}</li>
+  </ul>
+</p>
   <!-- ======================TP-TodoList=============== -->
   <hr>
   <div :style="{ background: 'midnightblue', padding: '10px', textAlign: 'center', color:'yellow' }">
@@ -43,7 +65,7 @@
     </form>
     <p v-if="taches.length === 0">Aucune tâches</p>
     <ul>
-      <li :class="{completed: tache.complete}"  v-for="tache in sortedtodo()" :key="tache.date"> {{ tache.titre }} <input type="checkbox" v-model="tache.complete"></li>
+      <li :class="{completed: tache.complete}"  v-for="tache in sortedtodo" :key="tache.date"> {{ tache.titre }} <input type="checkbox" v-model="tache.complete"></li>
     </ul>
     <label> 
       <input type="checkbox" v-model="hideCompleted">
@@ -53,14 +75,15 @@
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { computed, ref, nextTick, reactive  } from 'vue';
 const firstName = 'Dini'
 const learn = "<i>by practice</i>"
 const count = ref(0)
 console.log('count :', count);
 
-const increment = () => {
+const  increment = async () => {
   count.value++
+  await nextTick();
 }
 
 const movies = ref([
@@ -132,7 +155,7 @@ const taches = ref([
 ])
 const newTask = ref('');
 
-const AddTask = () => {
+const AddTask = async () => {
     if (newTask.value.trim() === '') {
       alert('veuillez renseigner le champ...!!!');
       newTask.value = '';
@@ -146,15 +169,37 @@ const AddTask = () => {
 
   taches.value.push(task);
   newTask.value = '';
+  await nextTick();
 }
 
 const hideCompleted = ref(false)
-const sortedtodo = () => {
+const sortedtodo = computed(() => {
+  
   const sortedtodo = taches.value.toSorted((a, b) => a.complete > b.complete ? 1 : -1);
   if (hideCompleted.value === true) {
     return taches.value.filter(t => t.complete === false)
 }
  return sortedtodo;
+})
+// test objet proxy avec api recative
+
+const profil = {
+  nom: 'John',
+  prenom: 'doe',
+  sexe: 'M',
+  eamil: 'test@gmail.com'
+}
+
+const profilProxy = reactive(profil)
+
+console.log('profil original ===>', profil);
+console.log('profil proxy ===>', profilProxy);
+
+const nouveauNom = ref('');
+const editeName = async () => {
+   profil.nom = nouveauNom.value;
+   nouveauNom.value = '';
+  await nextTick();
 }
 
 
